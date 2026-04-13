@@ -19,6 +19,7 @@
         <button onclick="rightFlank()">Right Flank</button>
         <button onclick="leftFlank()">Left Flank</button>
         <button onclick="reportIn()">Report In</button>
+        <button onclick="close()">Close March</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
@@ -474,8 +475,87 @@
 
     async function close(){
         if(checkMove > 0 && checkMove < 2){
-            // make a function to find the elements of the formation first
+            // make a function to find the elements of the formation first - done
+            /*
+            rightstep second and third elements
+            */
+           let formationByElements = findElements()
+           formationByElements[1].forEach(cadet => rightStep(cadet))
         }
     }
+
+    function findElements(){
+        /*
+        Check direction of flight
+        set each element into a list that will be iterated later
+            - if statements for each direction
+        return elements
+        */
+       let direct = formation[8].dir
+       let element1 = []
+       let element2 = []
+       let element3 = []
+
+       if(direct == "N"){
+        element1 = [formation[8], formation[5], formation[2]]
+        element2 = [formation[7], formation[4], formation[1]]
+        element3 = [formation[6], formation[3], formation[0]]
+        return [element1, element2, element3]
+       }else if(direct == "E"){
+        element1 = [formation[2], formation[1], formation[0]]
+        element2 = [formation[5], formation[4], formation[3]]
+        element3 = [formation[8], formation[7], formation[6]]
+        return [element1, element2, element3]
+       }else if(direct == "S"){
+        element1 = [formation[0], formation[3], formation[6]]
+        element2 = [formation[1], formation[4], formation[7]]
+        element3 = [formation[2], formation[5], formation[8]]
+        return [element1, element2, element3]
+       }else if(direct == "W"){
+        element1 = [formation[6], formation[7], formation[8]]
+        element2 = [formation[3], formation[4], formation[5]]
+        element3 = [formation[0], formation[1], formation[2]]
+        return [element1, element2, element3]
+       }else{
+        console.log("I'm not doing diagonals")
+       }
+    }
+
+    function findRows(){
+        /*
+        check direction og the flight
+        set each row into a list
+            - if statements
+        */
+        let direct = formation[8].dir
+        let row1 = []
+        let row2 = []
+        let row3 = []
+
+        if(direct == "N"){
+         row1 = [formation[6], formation[7], formation[8]]
+         row2 = [formation[3], formation[4], formation[5]]
+         row3 = [formation[0], formation[1], formation[2]]
+         return row1, row2, row3
+        }else if(direct == "E"){
+         row1 = [formation[8], formation[5], formation[2]]
+         row2 = [formation[7], formation[4], formation[1]]
+         row3 = [formation[6], formation[3], formation[0]]
+         return row1, row2, row3
+        }else if(direct == "S"){
+         row1 = [formation[0], formation[1], formation[2]]
+         row2 = [formation[3], formation[4], formation[5]]
+         row3 = [formation[6], formation[7], formation[8]]
+         return row1, row2, row3
+        }else if(direct == "W"){
+         row1 = [formation[0], formation[3], formation[6]]
+         row2 = [formation[1], formation[4], formation[7]]
+         row3 = [formation[2], formation[5], formation[8]]
+         return row1, row2, row3
+        }else{
+         console.log("I'm not doing diagonals")
+        }
+    }
+
 </script>
 </html>
