@@ -21,26 +21,36 @@
         <button onclick="reportIn()">Report In</button>
         <button onclick="closeMarch()">Close March</button>
         <button onclick="extendMarch()">Extend March</button>
+        <button onclick="openRanksMarch()">Open Ranks March</button>
+        <button onclick="closeRanksMarch()">Close Ranks March</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
 <script>
     const formation = [
-      { x: 3, y: 15, dir: "N" },
-      { x: 5, y: 15, dir: "N" },
-      { x: 7, y: 15, dir: "N" },
-      { x: 3, y: 13, dir: "N" },
-      { x: 5, y: 13, dir: "N" },
-      { x: 7, y: 13, dir: "N" },
-      { x: 3, y: 11, dir: "N" },
-      { x: 5, y: 11, dir: "N" },
-      { x: 7, y: 11, dir: "N" },
-      { x: 1, y: 13, dir: "N" }
+      { x: 33, y: 35, dir: "N" },
+      { x: 35, y: 35, dir: "N" },
+      { x: 37, y: 35, dir: "N" },
+      { x: 33, y: 33, dir: "N" },
+      { x: 35, y: 33, dir: "N" },
+      { x: 37, y: 33, dir: "N" },
+      { x: 33, y: 31, dir: "N" },
+      { x: 35, y: 31, dir: "N" },
+      { x: 37, y: 31, dir: "N" },
+      { x: 31, y: 33, dir: "N" }
     ];
     const canvas = document.getElementById("drillCanvas");
     const ctx = canvas.getContext("2d");
     let p = 10
     let checkMove = 1 //sets whether or not the dots are moving
+    
+    function centerLine(){
+        ctx.beginPath();
+        ctx.moveTo(0,canvas.height / 2);
+        ctx.lineTo(canvas.width, canvas.height / 2);
+        ctx.stroke();
+    }
+    centerLine()
 
     function flightHalt(){
         // stops movement
@@ -84,6 +94,8 @@
 
     function drawFormation() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      centerLine()
 
       formation.forEach(cadet => {
         ctx.beginPath();
@@ -461,10 +473,6 @@
         await sleep(500)
         forwardMarch(formation[9].dir, formation[9])
         await sleep(500)
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
-        forwardMarch(formation[9].dir, formation[9])
-        await sleep(500)
         aboutFace(formation[9])
     }
     async function rightStep(cadet){
@@ -599,24 +607,43 @@
          row1 = [formation[6], formation[7], formation[8]]
          row2 = [formation[3], formation[4], formation[5]]
          row3 = [formation[0], formation[1], formation[2]]
-         return row1, row2, row3
+         return [row1, row2, row3]
         }else if(direct == "E"){
          row1 = [formation[8], formation[5], formation[2]]
          row2 = [formation[7], formation[4], formation[1]]
          row3 = [formation[6], formation[3], formation[0]]
-         return row1, row2, row3
+         return [row1, row2, row3]
         }else if(direct == "S"){
          row1 = [formation[0], formation[1], formation[2]]
          row2 = [formation[3], formation[4], formation[5]]
          row3 = [formation[6], formation[7], formation[8]]
-         return row1, row2, row3
+         return [row1, row2, row3]
         }else if(direct == "W"){
          row1 = [formation[0], formation[3], formation[6]]
          row2 = [formation[1], formation[4], formation[7]]
          row3 = [formation[2], formation[5], formation[8]]
-         return row1, row2, row3
+         return [row1, row2, row3]
         }else{
          console.log("I'm not doing diagonals")
+        }
+    }
+
+    async function openRanksMarch(){
+        if(checkMove == 1 && ((Math.abs(formation[9].x - formation[3].x) || Math.abs(formation[9].y - formation[3].y)) > 2)){
+            let formationByRows = findRows()
+            formationByRows[0].forEach(cad => forwardMarch(cad.dir, cad))
+            formationByRows[1].forEach(cad => forwardMarch(cad.dir, cad))
+            await sleep(500)
+            formationByRows[0].forEach(cad => forwardMarch(cad.dir, cad))
+        }
+    }
+    async function closeRanksMarch(){
+        if(checkMove == 1 && (((Math.abs(formation[3].x - formation[5].x) || Math.abs(formation[3].y - formation[5].y)) || (Math.abs(formation[7].x - formation[1].x) || Math.abs(formation[7].y - formation[5].y))) > 4)){
+            let formationByRows = findRows()
+            formationByRows[2].forEach(cad => forwardMarch(cad.dir, cad))
+            formationByRows[1].forEach(cad => forwardMarch(cad.dir, cad))
+            await sleep(500)
+            formationByRows[2].forEach(cad => forwardMarch(cad.dir, cad))
         }
     }
 
