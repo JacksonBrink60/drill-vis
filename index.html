@@ -24,6 +24,8 @@
         <button onclick="openRanksMarch()">Open Ranks March</button>
         <button onclick="closeRanksMarch()">Close Ranks March</button>
         <button onclick="leftStepMarch()">Left Step March</button>
+        <button onclick="rightStepMarch()">Right Step March</button>
+        <button onclick="commanderAboutFace()">Commander About Face</button>
     </div>
     <canvas id="drillCanvas" width="1500" height="1700"></canvas>
 </body>
@@ -38,7 +40,7 @@
       { x: 33, y: 31, dir: "N" },
       { x: 35, y: 31, dir: "N" },
       { x: 37, y: 31, dir: "N" },
-      { x: 31, y: 33, dir: "N" }
+      { x: 31, y: 33, dir: "N", role: "commander" }
     ];
     const canvas = document.getElementById("drillCanvas");
     const ctx = canvas.getContext("2d");
@@ -104,12 +106,9 @@
     }
     async function constantHalfStepSpecific(cadet){
         // moves one cadet in half step without stopping
-        if(checkMove < 1){
-            checkMove++
-            checkMove++
-        }else if(checkMove < 2){
-            checkMove++
-        }else if(checkMove == 2){
+        if(checkMove !== 2){
+            checkMove = 2
+        }else {
             return
         }
         while(checkMove == 2){
@@ -243,11 +242,38 @@
     }
     const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
+    function distanceToPivot(cadet, pivot) {
+        return Math.hypot(cadet.x - pivot.x, cadet.y - pivot.y);
+    }
+
+    async function halfStepSleep(cadet){
+        forwardHalfStep(cadet)
+        await sleep(500)
+    }
+
+
     async function columnRight(){
-        if(checkMove < 1){
-            checkMove++
-        }else if(checkMove > 1){
-            checkMove--
+        if(checkMove !== 0){
+            checkMove = 0
+        }
+        let elements = findElements()
+        if(checkMove !== 1){
+            checkMove = 1
+        }
+        let pivotCadet = elements[elements.length - 1][0]
+        let pivot = { x: pivotCadet.x, y: pivotCadet.y }
+
+        for(let i = elements.length - 1; i >= 0; i--){
+            let element = elements[i]
+
+            element.forEach(cadet => {
+                if(distanceToPivot(cadet, pivot) > 0){
+                    
+                }
+                turnRight(cadet)
+                constantHalfStepSpecific(cadet)
+            })
+            await sleep(500)
         }
     }
     function aboutFaceAll(){
@@ -265,10 +291,8 @@
         }
     }
     async function toTheRearMarch(){
-        if(checkMove < 1){
-            checkMove++
-        }else if(checkMove > 1){
-            checkMove--
+        if(checkMove !== 1){
+            checkMove = 1
         }
         // await sleep(500)
         forwardMarchAll()
@@ -290,7 +314,7 @@
             turnRight(formation[6])
             turnRight(formation[7])
             turnRight(formation[8])
-            turnRight(formation[9])
+            turnLeft(formation[9])
         }
     }
     function leftFace(){
@@ -304,9 +328,14 @@
             turnLeft(formation[6])
             turnLeft(formation[7])
             turnLeft(formation[8])
-            turnLeft(formation[9])
+            turnRight(formation[9])
         }
     }
+
+    function commanderAboutFace(){
+        aboutFace(formation[9])
+    }
+
     async function rightFlank(){
         if(checkMove < 1){
             checkMove++
@@ -316,6 +345,7 @@
             forwardMarchAll()
         }
         rightFace()
+        commanderAboutFace()
         await sleep(500)
         constantForwardMarch()
     }
@@ -328,6 +358,7 @@
             forwardMarchAll()
         }
         leftFace()
+        commanderAboutFace()
         await sleep(500)
         constantForwardMarch()
     }
@@ -373,20 +404,21 @@
             x: Math.cos(angleRad),
             y: -Math.sin(angleRad)
         };
-    
+        
         // Right vector (perpendicular)
         const right = {
             x: Math.cos(angleRad - Math.PI / 2),
             y: -Math.sin(angleRad - Math.PI / 2)
         };
-    
+        
         // Use squad leader (index 0 or 9 depending on your setup)
         const origin = formation[4]; // center-ish (more stable than edge)
-    
+        
         // Convert everyone into formation-relative coordinates
         const elementsMap = {};
-    
+        
         formation.forEach(cadet => {
+            if (cadet.role === "commander" && checkMove === 1) return;
             const dx = cadet.x - origin.x;
             const dy = cadet.y - origin.y;
         
@@ -452,7 +484,6 @@
         }
     }
     async function extendMarch(){
-        console.log(findElements())
         if(checkMove == 1){
             let formationByElements = findElements()
             formationByElements[1].forEach(cadetTemp => {
@@ -482,40 +513,54 @@
     }
 
 
-    function findRows(){
-        /*
-        check direction og the flight
-        set each row into a list
-            - if statements
-        */
-        let direct = formation[8].dir
-        let row1 = []
-        let row2 = []
-        let row3 = []
+    function findRows() {
+        const angleDeg = dirToAngle[formation[0].dir];
+        const angleRad = angleDeg * Math.PI / 180;
 
-        if(direct == "N"){
-         row1 = [formation[6], formation[7], formation[8]]
-         row2 = [formation[3], formation[4], formation[5]]
-         row3 = [formation[0], formation[1], formation[2]]
-         return [row1, row2, row3]
-        }else if(direct == "E"){
-         row1 = [formation[8], formation[5], formation[2]]
-         row2 = [formation[7], formation[4], formation[1]]
-         row3 = [formation[6], formation[3], formation[0]]
-         return [row1, row2, row3]
-        }else if(direct == "S"){
-         row1 = [formation[0], formation[1], formation[2]]
-         row2 = [formation[3], formation[4], formation[5]]
-         row3 = [formation[6], formation[7], formation[8]]
-         return [row1, row2, row3]
-        }else if(direct == "W"){
-         row1 = [formation[0], formation[3], formation[6]]
-         row2 = [formation[1], formation[4], formation[7]]
-         row3 = [formation[2], formation[5], formation[8]]
-         return [row1, row2, row3]
-        }else{
-         console.log("I'm not doing diagonals")
-        }
+        // Forward vector
+        const forward = {
+            x: Math.cos(angleRad),
+            y: -Math.sin(angleRad)
+        };
+
+        // Right vector
+        const right = {
+            x: Math.cos(angleRad - Math.PI / 2),
+            y: -Math.sin(angleRad - Math.PI / 2)
+        };
+
+        const origin = formation[4]; // center of formation
+        const rowsMap = {};
+
+        formation.forEach(cadet => {
+            if (cadet.role === "commander") return; // skip commander
+
+            const dx = cadet.x - origin.x;
+            const dy = cadet.y - origin.y;
+
+            const forwardDist = dx * forward.x + dy * forward.y;
+            const rightDist = dx * right.x + dy * right.y;
+
+            const spacing = 2;
+            const key = Math.round(forwardDist / spacing);
+
+            if (!rowsMap[key]) rowsMap[key] = [];
+
+            rowsMap[key].push({
+                cadet,
+                rightDist
+            });
+        });
+
+        const rows = Object.keys(rowsMap)
+            .sort((a, b) => b - a) // front row first
+            .map(key => {
+                return rowsMap[key]
+                    .sort((a, b) => a.rightDist - b.rightDist) // left to right
+                    .map(obj => obj.cadet);
+            });
+
+        return rows;
     }
 
     async function openRanksMarch(){
@@ -550,7 +595,33 @@
                 leftStep(formation[6])
                 leftStep(formation[7])
                 leftStep(formation[8])
-                leftStep(formation[9])
+                if(formation[9].dir != formation[0].dir){
+                    rightStep(formation[9])
+                }else{
+                    leftStep(formation[9])
+                }
+                await sleep(500)
+            }
+        }
+    }
+    async function rightStepMarch(){
+        if(checkMove == 1){
+            checkMove--
+            while(checkMove == 0){
+                rightStep(formation[0])
+                rightStep(formation[1])
+                rightStep(formation[2])
+                rightStep(formation[3])
+                rightStep(formation[4])
+                rightStep(formation[5])
+                rightStep(formation[6])
+                rightStep(formation[7])
+                rightStep(formation[8])
+                if(formation[9].dir != formation[0].dir){
+                    leftStep(formation[9])
+                }else{
+                    rightStep(formation[9])
+                }
                 await sleep(500)
             }
         }
