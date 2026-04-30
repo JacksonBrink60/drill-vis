@@ -130,7 +130,7 @@
     }
     drawFormation()
     function forwardMarch(cadet) {
-        const diag = 1 / Math.sqrt(2);
+        const diag = 1
         if (cadet.dir =="N"){
               cadet.y -= 1; // move up
         }else if(cadet.dir =="E"){
@@ -181,7 +181,7 @@
     }
 
     function forwardHalfStep(cadet, mult = 1) {
-        const diag = 0.5 / Math.sqrt(2);
+        const diag = 0.5
         if (cadet.dir =="N"){
               cadet.y -= 0.5*mult; // move up
         }else if(cadet.dir =="E"){
@@ -258,54 +258,190 @@
             checkMove = 1
         }
         console.log(elements[elements.length - 2][0])
+        forwardMarchAll()
+        await sleep(500)
         if(elements[elements.length-2][0].role == "commander"){
-            turnHalfRight(elements[elements.length-2][0])
+            turnRight(elements[elements.length-2][0])
             forwardMarch(elements[elements.length-2][0])
+            turnHalfRight(elements[elements.length-3][0])
+            forwardMarch(elements[elements.length-3][0])
             turnHalfRight(elements[elements.length-2][1])
             forwardMarch(elements[elements.length-2][1])
             forwardMarch(elements[elements.length-2][2])
+            forwardMarch(elements[elements.length-3][1])
+            forwardMarch(elements[elements.length-3][2])
             forwardMarch(elements[elements.length-2][3])
             turnRight(elements[elements.length - 1][0])
             constantHalfStepSpecific(elements[elements.length - 1][0])
             forwardHalfStep(elements[elements.length-1][1])
             forwardHalfStep(elements[elements.length-1][2])
         }else{
-            turnHalfRight(elements[elements.length-2][0])
-            forwardMarch(elements[elements.length-2][0])
-            forwardMarch(elements[elements.length-2][1])
-            forwardMarch(elements[elements.length-2][2])
             if(elements[elements.length-2][elements[elements.length-2].length-1].role == "commander"){
+                turnHalfRight(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
                 turnRight(elements[elements.length - 1][0])
                 constantHalfStepSpecific(elements[elements.length - 1][0])
                 forwardMarch(formation[9])
                 forwardHalfStep(elements[elements.length-1][1])
                 forwardHalfStep(elements[elements.length-1][2])
+                turnHalfRight(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
             }else if(elements[0][0].role == "commander"){
                 turnRight(elements[elements.length - 1][0])
                 constantHalfStepSpecific(elements[elements.length - 1][0])
                 forwardMarch(formation[9])
                 forwardHalfStep(elements[elements.length-1][1])
                 forwardHalfStep(elements[elements.length-1][2])
+                turnHalfRight(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                turnHalfRight(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
             }else if(elements[elements.length-1][0].role == "commander"){
-                
+                turnRight(elements[elements.length - 2][0])
+                constantHalfStepSpecific(elements[elements.length - 2][0])
+                turnRight(formation[9])
+                forwardHalfStep(elements[elements.length-2][1])
+                forwardHalfStep(elements[elements.length-2][2])
+                turnHalfRight(elements[elements.length-4][0])
+                forwardMarch(elements[elements.length-4][0])
+                forwardMarch(elements[elements.length-4][1])
+                forwardMarch(elements[elements.length-4][2])
+                turnHalfRight(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
             }
         }
-        turnHalfRight(elements[elements.length-3][0])
-        forwardMarch(elements[elements.length-3][0])
-        forwardMarch(elements[elements.length-3][1])
-        forwardMarch(elements[elements.length-3][2])
         await sleep(500)
-        forwardHalfStep(elements[elements.length-1][1])
-        forwardHalfStep(elements[elements.length-1][2])
         if(elements[elements.length-2][0].role == "commander"){
+            forwardHalfStep(elements[elements.length-1][1])
+            forwardHalfStep(elements[elements.length-1][2])
+            forwardMarch(elements[elements.length-3][0])
+            forwardMarch(elements[elements.length-3][1])
+            turnHalfRight(elements[elements.length-3][1])
+            forwardMarch(elements[elements.length-3][2])
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][0])
+            forwardMarch(elements[elements.length-2][1])
+            turnHalfRight(elements[elements.length-2][1])
+            forwardMarch(elements[elements.length-2][2])
+            turnHalfRight(elements[elements.length-2][2])
+            forwardMarch(elements[elements.length-2][3])
+        }else{
+            if(elements[elements.length-2][elements[elements.length-2].length-1].role == "commander"){
+                forwardMarch(elements[elements.length-2][0])
+                turnHalfRight(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                turnHalfRight(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
+                forwardMarch(formation[9])
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                turnHalfRight(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+            }else if(elements[0][0].role == "commander"){
+                forwardMarch(formation[9])
+                turnHalfRight(formation[9])
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                turnHalfRight(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                forwardMarch(elements[elements.length-2][0])
+                turnHalfRight(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                turnHalfRight(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
+            }else if(elements[elements.length-1][0].role == "commander"){
+                forwardHalfStep(elements[elements.length-2][1])
+                forwardHalfStep(elements[elements.length-2][2])
+                forwardMarch(elements[elements.length-4][0])
+                forwardMarch(elements[elements.length-4][1])
+                turnHalfRight(elements[elements.length-4][1])
+                forwardMarch(elements[elements.length-4][2])
+                forwardMarch(elements[elements.length-3][0])
+                turnHalfRight(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                turnHalfRight(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+            }
+        }
+        await sleep(500)
+        if(elements[elements.length-2][0].role == "commander"){
+            forwardHalfStep(elements[elements.length-1][1])
+            forwardHalfStep(elements[elements.length-1][2])
             forwardMarch(elements[elements.length-2][0])
             forwardMarch(elements[elements.length-2][1])
             forwardMarch(elements[elements.length-2][2])
             forwardMarch(elements[elements.length-2][3])
+            forwardMarch(elements[elements.length-3][0])
+            forwardMarch(elements[elements.length-3][1])
+            forwardMarch(elements[elements.length-3][2])
         }else{
-            forwardMarch(elements[elements.length-2][0])
-            forwardMarch(elements[elements.length-2][1])
-            forwardMarch(elements[elements.length-2][2])
+            if(elements[elements.length-2][elements[elements.length-2].length-1].role == "commander"){
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+                forwardMarch(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                forwardMarch(formation[9])
+            }else if(elements[0][0].role == "commander"){
+                forwardHalfStep(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+                forwardMarch(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                forwardMarch(formation[9])
+            }else if(elements[elements.length-1][0].role == "commander"){
+                forwardHalfStep(elements[elements.length-2][1])
+                forwardHalfStep(elements[elements.length-2][2])
+                forwardMarch(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                forwardMarch(elements[elements.length-4][0])
+                forwardMarch(elements[elements.length-4][1])
+                forwardMarch(elements[elements.length-4][2])
+            }
+        }
+        await sleep(500)
+        if(elements[elements.length-2][0].role == "commander"){
+        }else{
+            if(elements[elements.length-2][elements[elements.length-2].length-1].role == "commander"){
+            }else if(elements[0][0].role == "commander"){
+                forwardHalfStep(elements[elements.length-1][1])
+                turnHalfRight(elements[elements.length-1][1])
+                forwardHalfStep(elements[elements.length-1][2])
+                forwardMarch(elements[elements.length-3][0])
+                turnHalfRight(elements[elements.length-3][0])
+                forwardMarch(elements[elements.length-3][1])
+                forwardMarch(elements[elements.length-3][2])
+                turnHalfRight(elements[elements.length-3][2])
+                forwardMarch(elements[elements.length-2][0])
+                forwardMarch(elements[elements.length-2][1])
+                forwardMarch(elements[elements.length-2][2])
+                turnHalfRight(elements[elements.length-2][1])
+                turnHalfRight(elements[elements.length-2][2])
+                forwardMarch(formation[9])
+            }else if(elements[elements.length-1][0].role == "commander"){
+            }
         }
 
     }
